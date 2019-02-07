@@ -30,9 +30,8 @@ fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b)
 fun Float.getRectForScale(sc : Float) : RectF = RectF(0f, -this / 2, this , this / 2 * sc)
 
 fun Canvas.drawFillSemiCircle(i : Int, size : Float, sc : Float, paint : Paint) {
-    val rect : RectF = RectF(0f, -size / 2, size, size / 2)
     save()
-    translate(-size + i * size, 0f)
+    translate(-i * size, 0f)
     val path : Path = Path()
     path.addArc(size.getRectForScale(1f), 0f, 180f)
     clipPath(path)
@@ -62,7 +61,7 @@ fun Canvas.drawDSCRNode(i : Int, scale : Float, paint : Paint) {
 class DoubleSemiCircleRotView(ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    
+
     override fun onDraw(canvas : Canvas) {
 
     }
@@ -74,5 +73,25 @@ class DoubleSemiCircleRotView(ctx : Context) : View(ctx) {
             }
         }
         return true
+    }
+
+    data class State(var scale : Float = 0f, var prevScale : Float = 0f, var dir : Float = 0f) {
+
+        fun update(cb : (Float) -> Unit) {
+            scale += scale.updateValue(dir, parts, 1)
+            if (Math.abs(scale - prevScale) > 1) {
+                scale = prevScale + dir
+                dir = 0f
+                prevScale = scale
+                cb(prevScale)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            if (dir == 0f) {
+                dir = 1f - 2 * prevScale
+                cb()
+            }
+        }
     }
 }
