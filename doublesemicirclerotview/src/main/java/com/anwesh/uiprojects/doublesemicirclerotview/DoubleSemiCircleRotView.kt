@@ -212,4 +212,13 @@ class DoubleSemiCircleRotView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : DoubleSemiCircleRotView {
+            val view : DoubleSemiCircleRotView = DoubleSemiCircleRotView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
