@@ -189,4 +189,26 @@ class DoubleSemiCircleRotView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : DoubleSemiCircleRotView) {
+
+        private val animator : Animator = Animator(view)
+        private val dscr : DoubleSemiCircleRot = DoubleSemiCircleRot(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            dscr.draw(canvas, paint)
+            animator.animate {
+                dscr.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            dscr.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
